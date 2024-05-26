@@ -7,10 +7,14 @@ from dataset_utils import (
     MistralInstructDataset,
     GemmaInstructDataset,
 )
-import certifi
 
-# Set the SSL certificate file path
-os.environ["SSL_CERT_FILE"] = certifi.where()
+# refrence: https://mlops.community/budget-instruction-fine-tuning-of-llama-3-8b-instructon-medical-data-with-hugging-face-google-colab-and-unsloth/
+
+
+# import certifi
+
+# # Set the SSL certificate file path
+# os.environ["SSL_CERT_FILE"] = certifi.where()
 
 REMOVE_COLUMNS = ["source", "focus_area"]
 RENAME_COLUMNS = {"question": "input", "answer": "output"}
@@ -146,7 +150,7 @@ if __name__ == "__main__":
     # save_and_push_datasets(concatenated_datasets, processed_data_path)
 
     # Create short datasets for free colab training (uncomment to execute)
-    # short_datasets = create_short_datasets(concatenated_datasets)
+    short_datasets = create_short_datasets(concatenated_datasets)
 
     # Save and push short datasets (uncomment to execute)
-    # save_and_push_datasets(short_datasets, processed_data_path, suffix="_short")
+    save_and_push_datasets(short_datasets, processed_data_path, suffix="_short")
