@@ -7,6 +7,7 @@ class InstructDataset(ABC):
 
     def __inti__(self, dataset_path: str):
         self.dataset = None
+        self.load_dataset(dataset_path)
 
     def load_dataset(self, dataset_path: str):
         """Load the dataset from the given path
