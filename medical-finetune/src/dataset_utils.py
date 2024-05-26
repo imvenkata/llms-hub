@@ -76,3 +76,16 @@ class MistralInstructDataset(InstructDataset):
             prompt = f"""<s>[INST] {row['instruction']} This is the question: {row['input']} [/INST] \\n {row['output']}</s>"""
             prompts.append(prompt)
         self.dataset["prompt"] = prompts
+
+
+class GemmaInstructDataset(InstructDataset):
+
+    def create_prompt(self):
+        """
+        Create the prompt column in the dataset which will be used for
+        """
+        prompts = []
+        for index, row in self.dataset.iterrows():
+            prompt = f"<start_of_turn>user {row['instruction']} This is the question: {row['input']}<end_of_turn> \\n <start_of_turn>model {row['output']}<end_of_turn>model"
+            prompts.append(prompt)
+        self.dataset["prompt"] = prompts
