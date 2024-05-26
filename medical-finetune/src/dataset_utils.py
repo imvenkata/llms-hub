@@ -3,9 +3,9 @@ import pandas as pd
 
 
 class InstructDataset(ABC):
-    """abstract class for creating instruct datasets"""
+    """Abstract class for creating instruct datasets"""
 
-    def __inti__(self, dataset_path: str):
+    def __init__(self, dataset_path: str):
         self.dataset = None
         self.load_dataset(dataset_path)
 
@@ -28,7 +28,6 @@ class InstructDataset(ABC):
 
         :param columns: a list of column names to drop
         """
-
         drop_columns = [col for col in columns if col in self.dataset.columns]
         self.dataset.drop(columns=drop_columns, inplace=True)
 
@@ -39,6 +38,13 @@ class InstructDataset(ABC):
         """
         self.dataset.dropna(subset=columns, inplace=True)
         self.dataset.drop_duplicates(subset=columns, inplace=True)
+
+    def create_instruction(self, instruction: str):
+        """Create instruction for the dataset
+
+        :param instruction: the instruction to add
+        """
+        self.dataset["instruction"] = instruction
 
     @abstractmethod
     def create_prompt(self) -> None:
@@ -53,39 +59,28 @@ class InstructDataset(ABC):
 class Llama3InstructDataset(InstructDataset):
     """Class for creating instruct datasets for the LLAMA3 dataset"""
 
-    def __init__(self, dataset_path: str):
-        super().__init__(dataset_path)
-
     def create_prompt(self):
         """Create the prompt for the dataset"""
         prompts = []
         for index, row in self.dataset.iterrows():
-            prompt = f"""<|start_header_id|>system<|end_header_id|> {row['instruction']}<|eot_id|><|start_header_id|>user<|end_header_id|> This is the question: {row['input']}<|eot_id|><|start_header_id|>assistant<|end_header_id|> {row['output']}<|eot_id|>"""
+            prompt = f"""system {row['instruction']} user This is the question: {row['input']} assistant {row['output']}"""
             prompts.append(prompt)
         self.dataset["prompt"] = prompts
 
 
 class MistralInstructDataset(InstructDataset):
+    """Class for creating instruct datasets for the Mistral dataset"""
 
     def create_prompt(self):
-        """
-        Create the prompt column in the dataset which will be used for
-        """
-        prompts = []
-        for index, row in self.dataset.iterrows():
-            prompt = f"""<s>[INST] {row['instruction']} This is the question: {row['input']} [/INST] \\n {row['output']}</s>"""
-            prompts.append(prompt)
-        self.dataset["prompt"] = prompts
+        """Create the prompt for the dataset"""
+        # Implement prompt creation logic specific to Mistral
+        pass
 
 
 class GemmaInstructDataset(InstructDataset):
+    """Class for creating instruct datasets for the Gemma dataset"""
 
     def create_prompt(self):
-        """
-        Create the prompt column in the dataset which will be used for
-        """
-        prompts = []
-        for index, row in self.dataset.iterrows():
-            prompt = f"<start_of_turn>user {row['instruction']} This is the question: {row['input']}<end_of_turn> \\n <start_of_turn>model {row['output']}<end_of_turn>model"
-            prompts.append(prompt)
-        self.dataset["prompt"] = prompts
+        """Create the prompt for the dataset"""
+        # Implement prompt creation logic specific to Gemma
+        pass
